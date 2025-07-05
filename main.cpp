@@ -51,7 +51,7 @@ int main(void)
   Animation<Vector2> animation_1(Vector2{0, 0}, Vector2{0, 100}, board->get_position_ref(), 2, new EaseOut());
   Animation<float> animation_2(600, 400, board->get_length(), 2, new EaseOut());
 
-  std::vector<std::pair<int, int>> initial_coords {{3, 2}, {1, 2}};
+  std::vector<std::pair<int, int>> initial_coords {{4, 2}};
   InputManager input_manager(board, initial_coords);
   while (!WindowShouldClose())
   {

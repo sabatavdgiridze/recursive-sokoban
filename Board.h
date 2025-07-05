@@ -5,6 +5,7 @@
 #include <memory>
 #include <set>
 #include <sstream>
+#include <unordered_set>
 #include <vector>
 
 #include "Chaikin.h"
@@ -18,6 +19,22 @@ public:
     BOX,
     BOARD
   };
+
+  class TypeChecker {
+  private:
+    std::pmr::unordered_set<Type> types;
+  public:
+    TypeChecker(std::initializer_list<Type> typeList) : types(typeList) {}
+
+    bool contains(Type type) const {
+      return types.find(type) != types.end();
+    }
+    bool operator()(Type type) const {
+      return contains(type);
+    }
+  };
+
+  static const TypeChecker movableObjects;
 
   enum class Direction {
     UP,
@@ -177,7 +194,7 @@ public:
       for (int i = 0; i < border.size(); i++) {
         auto f = transform(origin, screen_pos, x_a, y_a, border.at(i));
         auto s = transform(origin, screen_pos, x_a, y_a, border.at((i + 1) % border.size()));
-        DrawLineEx(f, s, 1.0f, color);
+        DrawLineEx(f, s, 2.0f, color);
       }
     }
   }
@@ -210,6 +227,26 @@ public:
     return &length;
   }
 
+  std::vector<std::pair<int, int>> act_movement(Direction dir, std::vector<std::vector<std::pair<int, int>>> sequence) {
+    std::vector<std::pair<int, int>> res;
+    for (int i = sequence.size() - 2; i >= 0; i--) {
+      auto next_position = sequence.at(i+1);
+      if (i == 0) {
+        res = next_position;
+      }
+      auto [row_next, col_next] = next_position.back();
+
+      auto [row, col] = sequence.at(i).back();
+
+      auto b_next = immediate_board(next_position);
+      auto b = immediate_board(sequence.at(i));
+
+      b_next->board[row_next][col_next] = b->board[row][col];
+      b->board[row][col] = {Type::EMPTY, nullptr};
+    }
+    return res;
+  }
+
   std::vector<std::pair<int, int>> move(std::vector<std::pair<int, int>> coords, Direction dir) {
     std::vector<std::vector<std::pair<int, int>>> sequence {coords};
     while (!(next(sequence.back(), dir).second == Type::OBSTACLE || next(sequence.back(), dir).second == Type::EMPTY)) {
@@ -217,25 +254,32 @@ public:
     }
     Type type = next(sequence.back(), dir).second;
     if (type == Type::OBSTACLE) {
+      // here we try to squizze, for this we go through
+      for (int i = 1; i < sequence.size(); i++) {
+        auto cell = at(sequence.at(i));
+        if (cell.first == Type::BOARD) {
+          auto pos = cell.second->get_entry(dir);
+          auto neighbour = cell.second->board[pos.first][pos.second];
+          if (neighbour.first == Type::EMPTY) {
+            std::vector<std::vector<std::pair<int, int>>> sub_sequence(sequence.begin(), sequence.begin() + i + 1);
+            sub_sequence.at(i).push_back(pos);
+            return act_movement(dir, sub_sequence);
+          }
+          if (movableObjects(neighbour.first)) {
+            auto displaced_neighbour = cell.second->move({pos}, dir);
+            if (displaced_neighbour.front() != pos) {
+              // the displacement happened in the inner board
+              std::vector<std::vector<std::pair<int, int>>> sub_sequence(sequence.begin(), sequence.begin() + i + 1);
+              sub_sequence.at(i).push_back(pos);
+              return act_movement(dir, sub_sequence);
+            }
+          }
+        }
+      }
       return coords;
     } else {
-      std::vector<std::pair<int, int>> res;
-      for (int i = sequence.size() - 1; i >= 0; i--) {
-        auto next_position = (i == sequence.size() - 1) ? next(sequence.back(), dir).first : sequence.at(i+1);
-        if (i == 0) {
-          res = next_position;
-        }
-        auto [row_next, col_next] = next_position.back();
-
-        auto [row, col] = sequence.at(i).back();
-
-        auto b_next = immediate_board(next_position);
-        auto b = immediate_board(sequence.at(i));
-
-        b_next->board[row_next][col_next] = b->board[row][col];
-        b->board[row][col] = {Type::EMPTY, nullptr};
-      }
-      return res;
+      sequence.push_back(next(sequence.back(), dir).first);
+      return act_movement(dir, sequence);
     }
   }
 
@@ -351,7 +395,20 @@ private:
     return {res, b->at({displaced}).first};
   }
 
+  std::pair<int, int> get_entry(Direction dir) {
+    // assuming that n is odd
+    int mid = (n - 1) / 2;
 
+    if (dir == Direction::DOWN) {
+      return {0, mid};
+    } else if (dir == Direction::UP) {
+      return {n - 1, mid};
+    } else if (dir == Direction::RIGHT) {
+      return {mid, 0};
+    } else if (dir == Direction::LEFT) {
+      return {mid, n-1};
+    }
+  }
 
 };
 
