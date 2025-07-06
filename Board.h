@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "Chaikin.h"
+#include "GameCamera.h"
 #include "raymath.h"
 
 class Board {
@@ -189,35 +190,19 @@ public:
     return borders;
   }
 
-  void draw_polygons(Vector2 origin, Vector2 screen_pos, Vector2 x_a, Vector2 y_a, std::vector<std::vector<Vector2>> borders, Color color) {
+  void draw_polygons(GameCamera* camera, std::vector<std::vector<Vector2>> borders, Color color) {
     for (auto border : borders) {
       for (int i = 0; i < border.size(); i++) {
-        auto f = transform(origin, screen_pos, x_a, y_a, border.at(i));
-        auto s = transform(origin, screen_pos, x_a, y_a, border.at((i + 1) % border.size()));
+        auto f = camera->transform(border.at(i));
+        auto s = camera->transform(border.at((i + 1) % border.size()));
         DrawLineEx(f, s, 2.0f, color);
       }
     }
   }
 
-  void draw(Vector2 origin, Vector2 screen_pos, Vector2 x_a, Vector2 y_a) {
-    draw_polygons(origin, screen_pos, x_a, y_a, draw_obstacles(), GRAY);
-    draw_polygons(origin, screen_pos, x_a, y_a, draw_boxes(), GOLD);
-  }
-
-  Vector2 transform(Vector2 origin, Vector2 screen_pos, Vector2 x_a, Vector2 y_a, Vector2 in) {
-    float a = x_a.x;
-    float b = y_a.x;
-    float c = x_a.y;
-    float d = y_a.y;
-
-    float det = a * d - b * c;
-    Vector2 local = in - origin;
-
-    Vector2 out;
-    out.x =  d * local.x - b * local.y;
-    out.y = -c * local.x + a * local.y;
-
-    return Vector2Scale(out, 1.0 / det) + screen_pos;
+  void draw(GameCamera* camera) {
+    draw_polygons(camera, draw_obstacles(), GRAY);
+    draw_polygons(camera, draw_boxes(), GOLD);
   }
 
   Vector2* get_position_ref() {

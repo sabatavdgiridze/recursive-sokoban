@@ -53,6 +53,13 @@ int main(void)
 
   std::vector<std::pair<int, int>> initial_coords {{4, 2}};
   InputManager input_manager(board, initial_coords);
+  auto* camera = new GameCamera(
+    Vector2{300, 300},
+    Vector2{400, 400},
+    Vector2{1, 0},
+    Vector2{0, -1}
+  );
+
   while (!WindowShouldClose())
   {
     BeginDrawing();
@@ -61,7 +68,7 @@ int main(void)
     animation_1.update(GetFrameTime());
     animation_2.update(GetFrameTime());
     input_manager.update();
-    board->draw(Vector2{300, 300}, Vector2{400, 400}, Vector2{1, 0}, Vector2{0, -1});
+    board->draw(camera);
     EndDrawing();
   }
   CloseWindow();
