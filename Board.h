@@ -18,6 +18,7 @@ public:
     EMPTY,
     OBSTACLE,
     BOX,
+    PLAYER,
     BOARD
   };
 
@@ -59,6 +60,8 @@ public:
           put(i, j, {Type::EMPTY, nullptr});
         } else if (lines[i][j] == '@') {
           put(i, j, {Type::BOX, nullptr});
+        } else if (lines[i][j] == 'P') {
+          put(i, j, {Type::PLAYER, nullptr});
         } else {
           put(i, j, {Type::BOARD, boards.at(lines[i][j])});
         }
@@ -155,11 +158,11 @@ public:
     return to_world(borders);
   }
 
-  std::vector<std::vector<Vector2>> draw_boxes() {
-    return to_world(draw_boxes_rec());
+  std::vector<std::vector<Vector2>> draw_objects(Type type) {
+    return to_world(draw_objects_rec(type));
   }
 
-  std::vector<std::vector<Vector2>> draw_boxes_rec() {
+  std::vector<std::vector<Vector2>> draw_objects_rec(Type type) {
     std::vector<std::vector<Vector2>> borders;
 
     for (int row = 0; row < n; row++) {
@@ -167,7 +170,7 @@ public:
         int x = col;
         int y = n - 1 - row;
         auto cell = board.at(row).at(col);
-        if (cell.first == Type::BOX) {
+        if (cell.first == type) {
           std::vector<Vector2> loop;
 
           loop.emplace_back(x, y);
@@ -177,7 +180,7 @@ public:
 
           borders.push_back(loop);
         } else if (cell.first == Type::BOARD) {
-          std::vector<std::vector<Vector2>> inner_borders = cell.second -> draw_boxes_rec();
+          std::vector<std::vector<Vector2>> inner_borders = cell.second -> draw_objects_rec(type);
           for (auto& loop : inner_borders) {
             for (auto& point : loop) {
               point = Vector2{(float)x, (float)y} + Vector2Scale(point, 1.0 / cell.second -> n);
@@ -196,13 +199,15 @@ public:
         auto f = camera->transform(border.at(i));
         auto s = camera->transform(border.at((i + 1) % border.size()));
         DrawLineEx(f, s, 2.0f, color);
+
       }
     }
   }
 
   void draw(GameCamera* camera) {
     draw_polygons(camera, draw_obstacles(), GRAY);
-    draw_polygons(camera, draw_boxes(), GOLD);
+    draw_polygons(camera, draw_objects(Type::BOX), GOLD);
+    draw_polygons(camera, draw_objects(Type::PLAYER), MAROON);
   }
 
   Vector2* get_position_ref() {
