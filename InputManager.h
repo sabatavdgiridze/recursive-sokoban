@@ -1,13 +1,18 @@
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
 #include "Board.h"
+#include "EventBus.h"
 
 
-class InputManager {
+class InputManager : public Notified {
 public:
   InputManager(Board *board, const std::vector<std::pair<int, int>> &coords)
     : board(board),
       coords(coords) {
+  }
+
+  void notify(std::string message) override {
+
   }
 
   void update() {

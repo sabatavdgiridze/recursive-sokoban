@@ -22,6 +22,8 @@ add_executable(recursive_sokoban main.cpp
         EventBus.cpp
         EventBus.h
         GameDataReader.cpp
-        GameDataReader.h)
+        GameDataReader.h
+        Scene.cpp
+        Scene.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm)

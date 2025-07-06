@@ -19,11 +19,11 @@ int main(void)
   InitWindow(screenWidth, screenHeight, "raylib example - basic window");
   SetTargetFPS(60);
 
-  auto* board = GameDataReader::create_boards("../boards").at(0);
+  auto* board = GameDataReader::create_boards("../boards").at(1);
   Animation<Vector2> animation_1(Vector2{0, 0}, Vector2{0, 100}, board->get_position_ref(), 2, new EaseOut());
   Animation<float> animation_2(600, 400, board->get_length(), 2, new EaseOut());
 
-  std::vector<std::pair<int, int>> initial_coords {{4, 2}};
+  std::vector<std::pair<int, int>> initial_coords {{6, 0}};
   InputManager input_manager(board, initial_coords);
   auto* camera = new GameCamera(
     Vector2{300, 300},
