@@ -15,14 +15,21 @@ public:
 };
 
 
+class AnimationBase {
+public:
+  virtual ~AnimationBase() = default;
+  virtual void update(float d_t) = 0;
+  virtual bool get_is_finished() = 0;
+};
+
 template<typename T>
-class Animation {
+class Animation : AnimationBase {
 public:
   Animation(T first, T last, T* current, float duration, Tweener* tweener) : first(first), last(last), current(current), duration(duration), tweener(tweener) {
     *current = first;
   }
 
-  void update(float d_t) {
+  void update(float d_t) override {
     t += d_t;
     if (t < duration) {
       *current = first * (1 - tweener->get(t / duration)) + last * tweener->get(t / duration);
@@ -32,7 +39,7 @@ public:
     }
   }
 
-  bool get_is_finished() {
+  bool get_is_finished() override {
     return is_finished;
   }
 

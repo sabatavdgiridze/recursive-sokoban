@@ -16,6 +16,12 @@ add_executable(recursive_sokoban main.cpp
         InputManager.cpp
         InputManager.h
         GameCamera.cpp
-        GameCamera.h)
+        GameCamera.h
+        AnimationManager.cpp
+        AnimationManager.h
+        EventBus.cpp
+        EventBus.h
+        GameDataReader.cpp
+        GameDataReader.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm)
