@@ -273,6 +273,25 @@ public:
     }
   }
 
+  std::vector<std::pair<int,int>> find_player_coords_rec() const {
+    for (int r = 0; r < n; r++) {
+      for (int c = 0; c < n; c++) {
+        auto cell = board[r][c];
+        if (cell.first == Type::PLAYER) {
+          return {{r, c}};
+        }
+        if (cell.first == Type::BOARD) {
+          auto sub = cell.second->find_player_coords_rec();
+          if (!sub.empty()) {
+            sub.insert(sub.begin(), {r, c});
+            return sub;
+          }
+        }
+      }
+    }
+    return {};
+  }
+
   void set_position(Vector2 position, float length) {
     this->positon = position;
     this->length = length;

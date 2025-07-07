@@ -4,15 +4,11 @@
 #include "EventBus.h"
 
 
-class InputManager : public Notified {
+class InputManager {
 public:
   InputManager(Board *board, const std::vector<std::pair<int, int>> &coords)
     : board(board),
       coords(coords) {
-  }
-
-  void notify(std::string message) override {
-
   }
 
   void update() {

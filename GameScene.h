@@ -6,10 +6,13 @@
 class GameScene : public AbstractScene {
   Board* board;
   GameCamera* camera = nullptr;
+  InputManager* input_manager = nullptr;
 
 public:
   explicit GameScene(Board* board) : board(board) {
     board->set_position({0, 0}, 500);
+    input_manager = new InputManager(board, board->find_player_coords_rec());
+
     camera = new GameCamera();
     camera->origin = {250, 250};
     camera->screen_pos = {400,400};
@@ -18,6 +21,9 @@ public:
   }
 
   AbstractScene * update(float d_t) override {
+    if (input_manager) {
+      input_manager->update();
+    }
     return nullptr;
   }
 
