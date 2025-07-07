@@ -1,5 +1,6 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
+#include <functional>
 
 class Tweener {
 public:
@@ -23,9 +24,23 @@ public:
 };
 
 template<typename T>
-class Animation : AnimationBase {
+class Animation : public AnimationBase {
 public:
-  Animation(T first, T last, T* current, float duration, Tweener* tweener) : first(first), last(last), current(current), duration(duration), tweener(tweener) {
+
+  Animation(
+    T first,
+    T last,
+    T* current,
+    float duration,
+    Tweener* tweener,
+    std::function<void()> on_complete
+  )
+  : first(first),
+    last(last),
+    current(current),
+    duration(duration),
+    tweener(tweener),
+    on_complete(on_complete) {
     *current = first;
   }
 
@@ -36,6 +51,9 @@ public:
     } else {
       *current = last;
       is_finished = true;
+      if (on_complete) {
+        on_complete();
+      }
     }
   }
 
@@ -49,6 +67,8 @@ private:
   Tweener* tweener;
   T first, last;
   T* current;
+
+  std::function<void()> on_complete;
 };
 
 

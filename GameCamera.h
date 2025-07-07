@@ -6,6 +6,8 @@
 
 class GameCamera {
 public:
+  GameCamera() = default;
+
   GameCamera(
     const Vector2 &origin,
     const Vector2 &screen_pos,
@@ -19,10 +21,10 @@ public:
 
   Vector2 transform(Vector2 world_pos);
 
-  Vector2 origin;
-  Vector2 screen_pos;
-  Vector2 x_axis;
-  Vector2 y_axis;
+  Vector2 origin{};
+  Vector2 screen_pos{};
+  Vector2 x_axis{};
+  Vector2 y_axis{};
 };
 
 

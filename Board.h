@@ -273,6 +273,11 @@ public:
     }
   }
 
+  void set_position(Vector2 position, float length) {
+    this->positon = position;
+    this->length = length;
+  }
+
 private:
   int n;
   Vector2 positon;
