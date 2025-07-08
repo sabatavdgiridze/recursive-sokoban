@@ -34,6 +34,12 @@ add_executable(recursive_sokoban main.cpp
         scenes/GameScene.cpp
         scenes/GameScene.h
         scenes/Operation.cpp
-        scenes/Operation.h)
+        scenes/Operation.h
+        fonts/FontLoader.cpp
+        fonts/FontLoader.h
+        scenes/InitialScene.cpp
+        scenes/InitialScene.h
+        UI.cpp
+        UI.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm)
