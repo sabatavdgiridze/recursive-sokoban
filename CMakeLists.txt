@@ -23,15 +23,17 @@ add_executable(recursive_sokoban main.cpp
         EventBus.h
         GameDataReader.cpp
         GameDataReader.h
-        Scene.cpp
-        Scene.h
+        scenes/Scene.cpp
+        scenes/Scene.h
         SierpinskiRenderer.cpp
         SierpinskiRenderer.h
-        LevelScene.cpp
-        LevelScene.h
-        SceneManager.cpp
-        SceneManager.h
-        GameScene.cpp
-        GameScene.h)
+        scenes/LevelScene.cpp
+        scenes/LevelScene.h
+        scenes/SceneManager.cpp
+        scenes/SceneManager.h
+        scenes/GameScene.cpp
+        scenes/GameScene.h
+        scenes/Operation.cpp
+        scenes/Operation.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm)

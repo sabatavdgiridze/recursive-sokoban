@@ -2,10 +2,10 @@
 
 #include "Board.h"
 #include "GameDataReader.h"
-#include "LevelScene.h"
+#include "scenes/LevelScene.h"
 #include "raylib.h"
-#include "Scene.h"
-#include "SceneManager.h"
+#include "scenes/Scene.h"
+#include "scenes/SceneManager.h"
 
 
 std::vector<Board*> create_boards(std::string file_path) {
@@ -21,7 +21,9 @@ int main(void)
   SetTargetFPS(60);
 
   std::vector<Board*> boards = GameDataReader::create_boards("../boards");
-  SceneManager scene_manager(new LevelScene(boards));
+
+  SceneManager scene_manager;
+  scene_manager.scenes.push(new LevelScene(boards));
 
   while (!WindowShouldClose())
   {

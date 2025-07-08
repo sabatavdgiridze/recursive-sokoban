@@ -64,7 +64,7 @@ public:
     }
   }
 
-  AbstractScene* update(float d_t) override {
+  Operation* update(float d_t) override {
     animation_manager->update(d_t);
     if (is_active) {
       if (IsKeyPressed(KEY_LEFT)) {
@@ -72,7 +72,7 @@ public:
       } else if (IsKeyPressed(KEY_RIGHT)) {
         move(1);
       } else if (IsKeyPressed(KEY_ENTER)) {
-        return new GameScene(boards.at(curr_idx));
+        return new PopAllOperation(new GameScene(boards.at(curr_idx)));
       }
     }
 

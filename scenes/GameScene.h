@@ -20,11 +20,11 @@ public:
     camera->y_axis     = {0,-1};
   }
 
-  AbstractScene * update(float d_t) override {
+  Operation* update(float d_t) override {
     if (input_manager) {
       input_manager->update();
     }
-    return nullptr;
+    return new NoOperation();
   }
 
   void draw() override {
