@@ -25,10 +25,6 @@ public:
     auto b = row.at(1, 0);
     auto c = row.at(2, 0);
 
-    DrawRectangleRec(a, GREEN);
-    DrawRectangleRec(b, RED);
-    DrawRectangleRec(c, BLUE);
-
   }
 private:
   GameCamera* camera = nullptr;
