@@ -194,21 +194,11 @@ public:
     return borders;
   }
 
-  void draw_polygons(GameCamera* camera, std::vector<std::vector<Vector2>> borders, Color color) {
-    for (auto border : borders) {
-      for (int i = 0; i < border.size(); i++) {
-        auto f = camera->transform(border.at(i));
-        auto s = camera->transform(border.at((i + 1) % border.size()));
-        DrawLineEx(f, s, 2.0f, color);
-
-      }
-    }
-  }
 
   void draw(GameCamera* camera) {
-    draw_polygons(camera, draw_obstacles(), GRAY);
-    draw_polygons(camera, draw_objects(Type::BOX), GOLD);
-    draw_polygons(camera, draw_objects(Type::PLAYER), MAROON);
+    camera->draw_polygons(draw_obstacles(), GRAY);
+    camera->draw_polygons(draw_objects(Type::BOX), GOLD);
+    camera->draw_polygons(draw_objects(Type::PLAYER), MAROON);
   }
 
   Vector2* get_position_ref() {

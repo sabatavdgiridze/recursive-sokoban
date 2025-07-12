@@ -44,6 +44,8 @@ add_executable(recursive_sokoban main.cpp
         scenes/GameScene/CommandController.cpp
         scenes/GameScene/CommandController.h
         scenes/GameScene/Command.cpp
-        scenes/GameScene/Command.h)
+        scenes/GameScene/Command.h
+        Buttons/UIButton.cpp
+        Buttons/UIButton.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm)

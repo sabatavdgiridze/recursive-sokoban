@@ -67,6 +67,15 @@ struct UI {
   operator Rectangle() {
     return rect;
   }
+
+  std::vector<Vector2> to_ccw_points() const {
+    return {
+      {rect.x, rect.y},
+      {rect.x + rect.width, rect.y},
+      {rect.x + rect.width, rect.y + rect.height},
+      {rect.x, rect.y + rect.height}
+    };
+  }
 };
 
 
