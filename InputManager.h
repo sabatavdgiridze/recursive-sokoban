@@ -1,31 +1,47 @@
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
-#include "Board.h"
-#include "EventBus.h"
+
+#include "GameState/Board.h"
+#include "scenes/GameScene/CommandController.h"
 
 
 class InputManager {
 public:
-  InputManager(Board *board, const std::vector<std::pair<int, int>> &coords)
-    : board(board),
-      coords(coords) {
+  InputManager(Board *board, const Command::BoardCoordinate &coords)
+    : board(board) {
+    command_controller = new CommandController(board, coords);
+
+    key_mappings = {
+      {KEY_LEFT, Board::Direction::LEFT},
+      {KEY_RIGHT, Board::Direction::RIGHT},
+      {KEY_UP, Board::Direction::UP},
+      {KEY_DOWN, Board::Direction::DOWN}
+    };
   }
 
   void update() {
-    if (IsKeyPressed(KEY_LEFT)) {
-      coords = board->move(coords, Board::Direction::LEFT);
-    } else if (IsKeyPressed(KEY_RIGHT)) {
-      coords = board->move(coords, Board::Direction::RIGHT);
-    } else if (IsKeyPressed(KEY_UP)) {
-      coords = board->move(coords, Board::Direction::UP);
-    } else if (IsKeyPressed(KEY_DOWN)) {
-      coords = board->move(coords, Board::Direction::DOWN);
+    for (auto [key, direction] : key_mappings) {
+      if (IsKeyPressed(key)) {
+        command_controller->make_move(
+          board->move(command_controller->get_player_position(),
+          direction)
+        );
+        return;;
+      }
+    }
+
+    if (IsKeyPressed(KEY_Z)) {
+      command_controller->undo();
+    } else if (IsKeyPressed(KEY_X)) {
+      command_controller->redo();
     }
   }
 
 private:
   Board* board;
-  std::vector<std::pair<int, int>> coords;
+  CommandController* command_controller;
+
+  std::map<int, Board::Direction> key_mappings;
 };
 
 

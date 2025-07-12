@@ -9,8 +9,8 @@ link_directories(${CMAKE_SOURCE_DIR}/raylib/lib)
 add_executable(recursive_sokoban main.cpp
         Chaikin.cpp
         Chaikin.h
-        Board.cpp
-        Board.h
+        GameState/Board.cpp
+        GameState/Board.h
         Animation.cpp
         Animation.h
         InputManager.cpp
@@ -31,8 +31,8 @@ add_executable(recursive_sokoban main.cpp
         scenes/LevelScene.h
         scenes/SceneManager.cpp
         scenes/SceneManager.h
-        scenes/GameScene.cpp
-        scenes/GameScene.h
+        scenes/GameScene/GameScene.cpp
+        scenes/GameScene/GameScene.h
         scenes/Operation.cpp
         scenes/Operation.h
         fonts/FontLoader.cpp
@@ -40,6 +40,10 @@ add_executable(recursive_sokoban main.cpp
         scenes/InitialScene.cpp
         scenes/InitialScene.h
         UI.cpp
-        UI.h)
+        UI.h
+        scenes/GameScene/CommandController.cpp
+        scenes/GameScene/CommandController.h
+        scenes/GameScene/Command.cpp
+        scenes/GameScene/Command.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm)

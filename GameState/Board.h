@@ -8,9 +8,10 @@
 #include <unordered_set>
 #include <vector>
 
-#include "Chaikin.h"
-#include "GameCamera.h"
+#include "../Chaikin.h"
+#include "../GameCamera.h"
 #include "raymath.h"
+#include "../scenes/GameScene/Command.h"
 
 class Board {
 public:
@@ -217,27 +218,40 @@ public:
     return &length;
   }
 
-  std::vector<std::pair<int, int>> act_movement(Direction dir, std::vector<std::vector<std::pair<int, int>>> sequence) {
-    std::vector<std::pair<int, int>> res;
-    for (int i = sequence.size() - 2; i >= 0; i--) {
-      auto next_position = sequence.at(i+1);
-      if (i == 0) {
-        res = next_position;
-      }
-      auto [row_next, col_next] = next_position.back();
+  Command make_sequence_command(const std::vector<Command::BoardCoordinate>& sequence) {
+    Command::Position previous;
+    Command::Position next;
 
-      auto [row, col] = sequence.at(i).back();
+    int idx = 0;
+    while (idx + 1 < sequence.size()) {
+      previous.push_back(sequence.at(idx));
+      next.push_back(sequence.at(idx + 1));
 
-      auto b_next = immediate_board(next_position);
-      auto b = immediate_board(sequence.at(i));
+      idx++;
+    }
+    return Command(previous, next);
+  }
+
+  void act_movement(Command command) {
+    if (!command.is_valid()) {
+      return;
+    }
+
+    auto [previous, next] = command.get_move();
+    int n = previous.size();
+    for (int i = n - 1; i >= 0; i--) {
+      auto b_next = immediate_board(next.at(i));
+      auto b = immediate_board(previous.at(i));
+
+      auto [row_next, col_next] = next.at(i).back();
+      auto [row, col] = previous.at(i).back();
 
       b_next->board[row_next][col_next] = b->board[row][col];
       b->board[row][col] = {Type::EMPTY, nullptr};
     }
-    return res;
   }
 
-  std::vector<std::pair<int, int>> move(std::vector<std::pair<int, int>> coords, Direction dir) {
+  Command move(std::vector<std::pair<int, int>> coords, Direction dir) {
     std::vector<std::vector<std::pair<int, int>>> sequence {coords};
     while (!(next(sequence.back(), dir).second == Type::OBSTACLE || next(sequence.back(), dir).second == Type::EMPTY)) {
       sequence.push_back(next(sequence.back(), dir).first);
@@ -253,23 +267,25 @@ public:
           if (neighbour.first == Type::EMPTY) {
             std::vector<std::vector<std::pair<int, int>>> sub_sequence(sequence.begin(), sequence.begin() + i + 1);
             sub_sequence.at(i).push_back(pos);
-            return act_movement(dir, sub_sequence);
+            return make_sequence_command(sub_sequence);
           }
           if (movableObjects(neighbour.first)) {
-            auto displaced_neighbour = cell.second->move({pos}, dir);
-            if (displaced_neighbour.front() != pos) {
+            auto displaced_neighbour_command = cell.second->move({pos}, dir);
+            if (displaced_neighbour_command.is_valid()) {
+              displaced_neighbour_command.add_outer_board(sequence.at(i).front());
               // the displacement happened in the inner board
-              std::vector<std::vector<std::pair<int, int>>> sub_sequence(sequence.begin(), sequence.begin() + i + 1);
-              sub_sequence.at(i).push_back(pos);
-              return act_movement(dir, sub_sequence);
+              std::vector<std::vector<std::pair<int, int>>> sub_sequence(sequence.begin(), sequence.begin() + i);
+              displaced_neighbour_command.prefix_with_sequence(sub_sequence);
+
+              return displaced_neighbour_command;
             }
           }
         }
       }
-      return coords;
+      return Command({}, {});
     } else {
       sequence.push_back(next(sequence.back(), dir).first);
-      return act_movement(dir, sequence);
+      return make_sequence_command(sequence);
     }
   }
 

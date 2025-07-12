@@ -1,6 +1,6 @@
 #include <fstream>
 
-#include "Board.h"
+#include "GameState/Board.h"
 #include "GameDataReader.h"
 #include "scenes/LevelScene.h"
 #include "raylib.h"
@@ -24,7 +24,7 @@ int main(void)
   std::vector<Board*> boards = GameDataReader::create_boards("../boards");
 
   SceneManager scene_manager;
-  scene_manager.scenes.push(new InitialScene());
+  scene_manager.scenes.push(new LevelScene(boards));
 
   while (!WindowShouldClose())
   {

@@ -1,7 +1,7 @@
 #ifndef LEVELSCENE_H
 #define LEVELSCENE_H
 
-#include "GameScene.h"
+#include "GameScene/GameScene.h"
 #include "Scene.h"
 
 

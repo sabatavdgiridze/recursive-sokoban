@@ -8,7 +8,7 @@
 #include <vector>
 #include <filesystem>
 
-#include "Board.h"
+#include "GameState/Board.h"
 
 
 class GameDataReader {

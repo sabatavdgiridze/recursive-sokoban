@@ -1,6 +1,6 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
-#include "Scene.h"
+#include "../Scene.h"
 
 
 class GameScene : public AbstractScene {
