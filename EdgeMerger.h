@@ -116,8 +116,6 @@ public:
     auto borders = uniteBordersUntilPossible(get_merged_borders(bool_grid));
     clean_borders(borders);
 
-    printf("size: %d\n", borders.size());
-
 
     for (auto& border : borders) {
       std::vector<std::pair<int, int>> int_points;

@@ -3,7 +3,6 @@
 #include "../EdgeMerger.h"
 
 void UIButton::draw(GameCamera* camera) {
-  // camera->draw_polygons({ui.to_ccw_points()}, GRAY);
   std::vector<std::vector<bool>> text_grid(rows, std::vector<bool>(cols, false));
 
   int row_offset = 1;

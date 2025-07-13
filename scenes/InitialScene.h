@@ -40,7 +40,7 @@ public:
     animation_manager->update(d_t);
 
     for (UIButton* button : buttons) {
-      button->update(d_t);
+      button->update(d_t, camera);
     }
 
     return new NoOperation();
