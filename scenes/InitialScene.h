@@ -18,7 +18,7 @@ public:
     animation_manager->push_animation(
       new Animation<float>(
         1,
-        2,
+        1.5,
         &camera->ratio,
         1,
         new EaseOut(),
@@ -26,7 +26,7 @@ public:
       )
     );
 
-    UI screen({0, 0, 800, 800});
+    UI screen({0, 0, 1000, 800});
     UI col = screen.pad(50).col({3, 2, 3});
 
     auto bottom = col.at(0, 0);

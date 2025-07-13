@@ -56,6 +56,8 @@ add_executable(recursive_sokoban main.cpp
         scenes/GameScene/Command.cpp
         scenes/GameScene/Command.h
         Buttons/UIButton.cpp
-        Buttons/UIButton.h)
+        Buttons/UIButton.h
+        EdgeMerger.cpp
+        EdgeMerger.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm nlohmann_json::nlohmann_json)
