@@ -20,6 +20,14 @@ struct UI {
     return copy;
   }
 
+  UI grid(int num_cols, int num_rows) {
+    UI copy = *this;
+    copy.cols = std::vector<float>(num_cols, 1.0f);
+    copy.rows = std::vector<float>(num_rows, 1.0f);
+
+    return copy;
+  }
+
   UI row(std::initializer_list<float> weights) {
     return grid(weights, {1});
   }

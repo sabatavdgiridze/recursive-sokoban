@@ -4,6 +4,7 @@
 #include "GameDataReader.h"
 #include "scenes/LevelScene.h"
 #include "raylib.h"
+#include "fonts/FontLoader.h"
 #include "scenes/InitialScene.h"
 #include "scenes/Scene.h"
 #include "scenes/SceneManager.h"
@@ -25,7 +26,10 @@ int main(void)
 
   SceneManager scene_manager;
   // scene_manager.scenes.push(new LevelScene(boards));
-  scene_manager.scenes.push(new InitialScene());
+  FontLoader* font_loader = new FontLoader();
+  font_loader->load("../fonts/font_data.json");
+
+  scene_manager.scenes.push(new InitialScene(font_loader));
   while (!WindowShouldClose())
   {
     BeginDrawing();

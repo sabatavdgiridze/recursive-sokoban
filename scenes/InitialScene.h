@@ -3,11 +3,12 @@
 #include "Scene.h"
 #include "../UI.h"
 #include "../Buttons/UIButton.h"
+#include "../fonts/FontLoader.h"
 
 
 class InitialScene : public AbstractScene {
 public:
-  InitialScene() {
+  InitialScene(FontLoader* font_loader) {
     camera = new GameCamera();
     camera->origin = {400, 400};
     camera->screen_pos = {400,400};
@@ -26,13 +27,13 @@ public:
     );
 
     UI screen({0, 0, 800, 800});
-    UI col = screen.pad(50).col({3, 1, 3});
+    UI col = screen.pad(50).col({3, 2, 3});
 
     auto bottom = col.at(0, 0);
     auto top = col.at(0, 2);
 
-    buttons.push_back(new UIButton(bottom));
-    buttons.push_back(new UIButton(top));
+    buttons.push_back(new UIButton(top, "LEVELS", font_loader));
+    buttons.push_back(new UIButton(bottom, "SETTINGS", font_loader));
   }
 
   Operation* update(float d_t) override {

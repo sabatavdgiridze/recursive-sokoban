@@ -6,6 +6,16 @@ set(CMAKE_CXX_STANDARD 20)
 include_directories(${CMAKE_SOURCE_DIR}/raylib/include)
 link_directories(${CMAKE_SOURCE_DIR}/raylib/lib)
 
+include(FetchContent)
+
+FetchContent_Declare(
+        nlohmann_json
+        GIT_REPOSITORY https://github.com/nlohmann/json.git
+        GIT_TAG v3.11.3
+)
+
+FetchContent_MakeAvailable(nlohmann_json)
+
 add_executable(recursive_sokoban main.cpp
         Chaikin.cpp
         Chaikin.h
@@ -48,4 +58,4 @@ add_executable(recursive_sokoban main.cpp
         Buttons/UIButton.cpp
         Buttons/UIButton.h)
 
-target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm)
+target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm nlohmann_json::nlohmann_json)
