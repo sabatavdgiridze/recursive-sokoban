@@ -58,6 +58,8 @@ add_executable(recursive_sokoban main.cpp
         Buttons/UIButton.cpp
         Buttons/UIButton.h
         EdgeMerger.cpp
-        EdgeMerger.h)
+        EdgeMerger.h
+        geometric_operations/Triangulation.cpp
+        geometric_operations/Triangulation.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm nlohmann_json::nlohmann_json)

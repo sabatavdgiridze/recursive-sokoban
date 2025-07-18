@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "raylib.h"
+#include "geometric_operations/Triangulation.h"
 
 
 class GameCamera {
@@ -29,6 +30,19 @@ public:
         auto s = transform(border.at((i + 1) % border.size()));
         DrawLineEx(f, s, 2.0f, color);
 
+      }
+    }
+  }
+
+  void fill_polygons(std::vector<std::vector<Vector2>> borders, Color color) {
+    std::vector<std::vector<Vector2>> triangles = Triangulation::triangulate_multiple(borders);
+
+    for (const auto& triangle : triangles) {
+      if (triangle.size() == 3) {
+        Vector2 p1 = transform(triangle[0]);
+        Vector2 p2 = transform(triangle[1]);
+        Vector2 p3 = transform(triangle[2]);
+        DrawTriangle(p1, p2, p3, color);
       }
     }
   }

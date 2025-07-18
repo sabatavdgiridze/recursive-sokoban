@@ -20,7 +20,8 @@ public:
     OBSTACLE,
     BOX,
     PLAYER,
-    BOARD
+    BOARD,
+    GOAL
   };
 
   class TypeChecker {
@@ -38,6 +39,7 @@ public:
   };
 
   static const TypeChecker movableObjects;
+  static const TypeChecker transparentObjects;
 
   enum class Direction {
     UP,
@@ -63,6 +65,9 @@ public:
           put(i, j, {Type::BOX, nullptr});
         } else if (lines[i][j] == 'P') {
           put(i, j, {Type::PLAYER, nullptr});
+        } else if (lines[i][j] == 'G') {
+          put(i, j, {Type::EMPTY, nullptr});
+          goal_layer[i][j] = true;
         } else {
           put(i, j, {Type::BOARD, boards.at(lines[i][j])});
         }
@@ -78,8 +83,11 @@ public:
 
   void reset_board(int n) {
     board.resize(n);
+    goal_layer.resize(n);
+
     for (int i = 0; i < n; i++) {
       board.at(i).resize(n);
+      goal_layer.at(i).resize(n, false);
     }
   }
 
@@ -163,6 +171,16 @@ public:
     return to_world(draw_objects_rec(type));
   }
 
+  std::vector<Vector2> create_center_rectangle(float x, float y, float margin) {
+    return {
+          {x + margin, y + margin},
+          {x + 1 - margin, y + margin},
+          {x + 1 - margin, y + 1 - margin},
+          {x + margin, y + 1 - margin}
+    };
+  }
+
+
   std::vector<std::vector<Vector2>> draw_objects_rec(Type type) {
     std::vector<std::vector<Vector2>> borders;
 
@@ -171,14 +189,12 @@ public:
         int x = col;
         int y = n - 1 - row;
         auto cell = board.at(row).at(col);
-        if (cell.first == type) {
+        if (type == Type::GOAL && goal_layer[row][col]) {
+          std::vector<Vector2> loop = create_center_rectangle(x, y, 0.33f);
+          borders.push_back(loop);
+        } else if (cell.first == type && type != Type::GOAL ) {
           std::vector<Vector2> loop;
-
-          loop.emplace_back(x, y);
-          loop.emplace_back(x + 1, y);
-          loop.emplace_back(x + 1, y + 1);
-          loop.emplace_back(x, y + 1);
-
+          loop = create_center_rectangle(x, y, 0.0f);
           borders.push_back(loop);
         } else if (cell.first == Type::BOARD) {
           std::vector<std::vector<Vector2>> inner_borders = cell.second -> draw_objects_rec(type);
@@ -196,6 +212,7 @@ public:
 
 
   void draw(GameCamera* camera) {
+    camera->fill_polygons(draw_objects(Type::GOAL), PURPLE);
     camera->draw_polygons(draw_obstacles(), GRAY);
     camera->draw_polygons(draw_objects(Type::BOX), GOLD);
     camera->draw_polygons(draw_objects(Type::PLAYER), MAROON);
@@ -243,7 +260,7 @@ public:
 
   Command move(std::vector<std::pair<int, int>> coords, Direction dir) {
     std::vector<std::vector<std::pair<int, int>>> sequence {coords};
-    while (!(next(sequence.back(), dir).second == Type::OBSTACLE || next(sequence.back(), dir).second == Type::EMPTY)) {
+    while (!(next(sequence.back(), dir).second == Type::OBSTACLE || transparentObjects(next(sequence.back(), dir).second))) {
       sequence.push_back(next(sequence.back(), dir).first);
     }
     Type type = next(sequence.back(), dir).second;
@@ -254,7 +271,7 @@ public:
         if (cell.first == Type::BOARD) {
           auto pos = cell.second->get_entry(dir);
           auto neighbour = cell.second->board[pos.first][pos.second];
-          if (neighbour.first == Type::EMPTY) {
+          if (transparentObjects(neighbour.first)) {
             std::vector<std::vector<std::pair<int, int>>> sub_sequence(sequence.begin(), sequence.begin() + i + 1);
             sub_sequence.at(i).push_back(pos);
             return make_sequence_command(sub_sequence);
@@ -309,6 +326,7 @@ private:
   float length;
 
   std::vector<std::vector<std::pair<Type, Board*>>> board;
+  std::vector<std::vector<bool>> goal_layer;
 
   void add_edges(std::vector<std::pair<int, int>> points, std::set<Edge> &edges) {
     for (int i = 0; i < points.size(); i++) {
@@ -416,7 +434,6 @@ private:
   }
 
   std::pair<int, int> get_entry(Direction dir) {
-    // assuming that n is odd
     int mid = (n - 1) / 2;
 
     if (dir == Direction::DOWN) {
