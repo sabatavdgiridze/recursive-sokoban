@@ -1,6 +1,7 @@
 #ifndef LEVELSCENE_H
 #define LEVELSCENE_H
 
+
 #include "GameScene/GameScene.h"
 #include "Scene.h"
 
@@ -18,6 +19,7 @@ public:
   bool is_active = true;
 
   LevelScene(std::vector<Board*> boards) : boards(boards) {
+
     float length = 500;
     float padding = 200;
 
@@ -97,6 +99,7 @@ public:
     camera->screen_pos = {400,400};
     camera->x_axis     = {1,0};
     camera->y_axis     = {0,-1};
+    camera->ratio = 1;
     set_camera(0);
   }
 };

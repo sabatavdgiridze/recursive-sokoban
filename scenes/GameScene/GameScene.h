@@ -18,6 +18,7 @@ public:
     camera->screen_pos = {400,400};
     camera->x_axis     = {1,0};
     camera->y_axis     = {0,-1};
+    camera->ratio = 1;
   }
 
   Operation* update(float d_t) override {

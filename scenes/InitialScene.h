@@ -1,5 +1,7 @@
 #ifndef INITIALSCENE_H
 #define INITIALSCENE_H
+#include "LevelScene.h"
+#include "../GameDataReader.h"
 #include "Scene.h"
 #include "../UI.h"
 #include "../Buttons/UIButton.h"
@@ -32,19 +34,27 @@ public:
     auto bottom = col.at(0, 0);
     auto top = col.at(0, 2);
 
-    buttons.push_back(new UIButton(top, "LEVELS", font_loader));
-    buttons.push_back(new UIButton(bottom, "SETTINGS", font_loader));
+    buttons.push_back(new UIButton(top, "LEVELS", font_loader, []() -> Operation* {
+      return new PopAllOperation(new LevelScene(GameDataReader::create_boards("../boards")));
+    }));
+    buttons.push_back(new UIButton(bottom, "SETTINGS", font_loader, []() -> Operation* {
+      return new NoOperation();
+    }));
   }
 
   Operation* update(float d_t) override {
     animation_manager->update(d_t);
 
     for (UIButton* button : buttons) {
-      button->update(d_t, camera);
+      Operation* operation_ptr = button->update(d_t, camera);
+      if (operation_ptr != nullptr) {
+        return operation_ptr;
+      }
     }
 
     return new NoOperation();
   };
+
   void draw() override {
 
     for (UIButton* button : buttons) {

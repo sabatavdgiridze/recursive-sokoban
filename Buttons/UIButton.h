@@ -5,18 +5,21 @@
 #include "../GameCamera.h"
 #include "../UI.h"
 #include "../fonts/FontLoader.h"
+#include "../scenes/Operation.h"
 
+
+class Operation;
 
 class UIButton {
 public:
-  explicit UIButton(UI ui, std::string text, FontLoader* font_loader) : ui(ui), text(text), font_loader(font_loader) {
+  explicit UIButton(UI ui, std::string text, FontLoader* font_loader, std::function<Operation*()> callback) : ui(ui), text(text), font_loader(font_loader), callback(callback) {
     cols = 100;
     rows = 30;
   }
 
   void draw(GameCamera* camera);
 
-  void update(float d_t, GameCamera* camera) {
+  Operation* update(float d_t, GameCamera* camera) {
     Vector2 mouse_screen = GetMousePosition();
 
     Vector2 mouse_world = camera->inverse_transform(mouse_screen);
@@ -32,8 +35,9 @@ public:
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mouse_world, ui_rect)) {
-
+      return callback();
     }
+    return nullptr;
   }
 private:
   UI ui;
@@ -42,6 +46,8 @@ private:
   bool inside = false;
   std::string text;
   FontLoader* font_loader;
+
+  std::function<Operation*()> callback;
 };
 
 

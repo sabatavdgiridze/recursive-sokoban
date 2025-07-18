@@ -2,7 +2,6 @@
 
 #include "GameState/Board.h"
 #include "GameDataReader.h"
-#include "scenes/LevelScene.h"
 #include "raylib.h"
 #include "fonts/FontLoader.h"
 #include "scenes/InitialScene.h"
@@ -10,9 +9,6 @@
 #include "scenes/SceneManager.h"
 
 
-std::vector<Board*> create_boards(std::string file_path) {
-
-}
 
 int main(void)
 {
@@ -22,10 +18,7 @@ int main(void)
   InitWindow(screenWidth, screenHeight, "raylib example - basic window");
   SetTargetFPS(60);
 
-  std::vector<Board*> boards = GameDataReader::create_boards("../boards");
-
   SceneManager scene_manager;
-  // scene_manager.scenes.push(new LevelScene(boards));
   FontLoader* font_loader = new FontLoader();
   font_loader->load("../fonts/font_data.json");
 
