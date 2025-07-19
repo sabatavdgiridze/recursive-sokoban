@@ -22,6 +22,15 @@ public:
       y_axis(y_axis),
       ratio(1) {
   }
+  void draw(std::vector<std::pair<std::vector<Vector2>, bool>> borders, Color color) {
+    for (auto [border, filled] : borders) {
+      if (filled) {
+        fill_polygons(border, color);
+      } else {
+        draw_polygons({border}, color);
+      }
+    }
+  }
 
   void draw_polygons(std::vector<std::vector<Vector2>> borders, Color color) {
     for (auto border : borders) {
@@ -34,8 +43,8 @@ public:
     }
   }
 
-  void fill_polygons(std::vector<std::vector<Vector2>> borders, Color color) {
-    std::vector<std::vector<Vector2>> triangles = Triangulation::triangulate_multiple(borders);
+  void fill_polygons(std::vector<Vector2> border, Color color) {
+    std::vector<std::vector<Vector2>> triangles = Triangulation::triangulate_multiple({border});
 
     for (const auto& triangle : triangles) {
       if (triangle.size() == 3) {

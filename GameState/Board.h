@@ -97,8 +97,47 @@ public:
 
   using Edge = std::pair<std::pair<int, int>, std::pair<int, int>>;
 
-  std::vector<std::vector<Vector2>> get_borders() {
-    std::vector<std::vector<Vector2>> borders;
+
+  class NestedBorders {
+  public:
+    std::vector<std::vector<Vector2>> obstacle_borders;
+    std::vector<NestedBorders*> nested_board_borders;
+    std::vector<bool> is_filled;
+
+    void transform_all_points(Vector2 offset, float scale) {
+      for (auto& border : obstacle_borders) {
+        for (auto& point : border) {
+          point = offset + Vector2Scale(point, scale);
+        }
+      }
+
+      for (auto& nested_border : nested_board_borders) {
+        // Recursively transform nested borders
+        nested_border->transform_all_points(offset, scale);
+      }
+    }
+
+    std::vector<std::pair<std::vector<Vector2>, bool>> flatten_with_fill() const {
+      std::vector<std::pair<std::vector<Vector2>, bool>> result;
+
+      for (const auto& border : obstacle_borders) {
+        result.emplace_back(border, false);
+      }
+
+      for (size_t i = 0; i < nested_board_borders.size(); ++i) {
+        auto nested_flattened = nested_board_borders[i]->flatten_with_fill();
+        for (const auto& nested_pair : nested_flattened) {
+          result.emplace_back(nested_pair.first, is_filled[i] || nested_pair.second);
+        }
+      }
+
+      return result;
+    }
+  };
+
+
+  NestedBorders* get_borders() {
+    NestedBorders* borders = new NestedBorders();
 
     std::set<Edge> edges;
 
@@ -117,13 +156,10 @@ public:
 
           add_edges(points, edges);
         } else if (cell.first == Type::BOARD) {
-          std::vector<std::vector<Vector2>> res = cell.second -> get_borders();
-          for (auto& loop : res) {
-            for (auto& point : loop) {
-              point = Vector2{(float)x, (float)y} + Vector2Scale(point, 1.0 / cell.second -> n);
-            }
-            borders.push_back(loop);
-          }
+          auto nested_borders = cell.second->get_borders();
+          nested_borders->transform_all_points(Vector2{(float)x, (float)y}, 1.0 / cell.second->n);
+          borders->nested_board_borders.push_back(nested_borders);
+          borders->is_filled.push_back(goal_layer[row][col]);
 
         }
       }
@@ -145,8 +181,7 @@ public:
         edges.erase(edge);
       }
       current_n += current_border.size();
-      borders.push_back(Chaikin::subdivide(loop_points(current_border), get_right_turns(loop_points(current_border)), 4));
-    }
+      borders->obstacle_borders.push_back(Chaikin::subdivide(loop_points(current_border), get_right_turns(loop_points(current_border)), 4));    }
     return borders;
   }
 
@@ -162,13 +197,39 @@ public:
     return in_world;
   }
 
-  std::vector<std::vector<Vector2>> draw_obstacles() {
+  std::vector<std::pair<std::vector<Vector2>, bool>> draw_obstacles() {
     auto borders = get_borders();
-    return to_world(borders);
+    auto flattened = borders->flatten_with_fill();
+
+    // Transform to world coordinates while preserving fill info
+    std::vector<std::pair<std::vector<Vector2>, bool>> result;
+    for (const auto& border_pair : flattened) {
+      auto transformed = to_world({border_pair.first})[0];
+      result.emplace_back(transformed, border_pair.second);
+    }
+
+    return result;
   }
 
-  std::vector<std::vector<Vector2>> draw_objects(Type type) {
-    return to_world(draw_objects_rec(type));
+  std::vector<std::pair<std::vector<Vector2>, bool>> draw_objects(Type type) {
+    auto objects_with_flags = draw_objects_rec(type);
+
+    // Extract just the vectors for to_world
+    std::vector<std::vector<Vector2>> borders;
+    for (const auto& obj : objects_with_flags) {
+      borders.push_back(obj.first);
+    }
+
+    // Transform using existing to_world method
+    auto transformed_borders = to_world(borders);
+
+    // Recombine with the bool flags
+    std::vector<std::pair<std::vector<Vector2>, bool>> result;
+    for (size_t i = 0; i < transformed_borders.size(); ++i) {
+      result.push_back({transformed_borders[i], objects_with_flags[i].second});
+    }
+
+    return result;
   }
 
   std::vector<Vector2> create_center_rectangle(float x, float y, float margin) {
@@ -181,28 +242,29 @@ public:
   }
 
 
-  std::vector<std::vector<Vector2>> draw_objects_rec(Type type) {
-    std::vector<std::vector<Vector2>> borders;
+  std::vector<std::pair<std::vector<Vector2>,bool>> draw_objects_rec(Type type) {
+    std::vector<std::pair<std::vector<Vector2>, bool>> borders;
 
     for (int row = 0; row < n; row++) {
       for (int col = 0; col < n; col++) {
         int x = col;
         int y = n - 1 - row;
         auto cell = board.at(row).at(col);
-        if (type == Type::GOAL && goal_layer[row][col]) {
+        bool is_goal_below = goal_layer[row][col];
+        if (type == Type::GOAL && cell.first ==Type::EMPTY && is_goal_below) {
           std::vector<Vector2> loop = create_center_rectangle(x, y, 0.33f);
-          borders.push_back(loop);
+          borders.push_back({loop, true});
         } else if (cell.first == type && type != Type::GOAL ) {
           std::vector<Vector2> loop;
           loop = create_center_rectangle(x, y, 0.0f);
-          borders.push_back(loop);
+          borders.push_back({loop, is_goal_below});
         } else if (cell.first == Type::BOARD) {
-          std::vector<std::vector<Vector2>> inner_borders = cell.second -> draw_objects_rec(type);
-          for (auto& loop : inner_borders) {
+          std::vector<std::pair<std::vector<Vector2>,bool>> inner_borders = cell.second -> draw_objects_rec(type);
+          for (auto& [loop, filled] : inner_borders) {
             for (auto& point : loop) {
               point = Vector2{(float)x, (float)y} + Vector2Scale(point, 1.0 / cell.second -> n);
             }
-            borders.push_back(loop);
+            borders.push_back({loop, filled});
           }
         }
       }
@@ -212,10 +274,10 @@ public:
 
 
   void draw(GameCamera* camera) {
-    camera->fill_polygons(draw_objects(Type::GOAL), PURPLE);
-    camera->draw_polygons(draw_obstacles(), GRAY);
-    camera->draw_polygons(draw_objects(Type::BOX), GOLD);
-    camera->draw_polygons(draw_objects(Type::PLAYER), MAROON);
+    camera->draw(draw_objects(Type::GOAL), PURPLE);
+    camera->draw(draw_obstacles(), GRAY);
+    camera->draw(draw_objects(Type::BOX), GOLD);
+    camera->draw(draw_objects(Type::PLAYER), MAROON);
   }
 
   Vector2* get_position_ref() {
