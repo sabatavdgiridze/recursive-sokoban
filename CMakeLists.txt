@@ -60,6 +60,8 @@ add_executable(recursive_sokoban main.cpp
         EdgeMerger.cpp
         EdgeMerger.h
         geometric_operations/Triangulation.cpp
-        geometric_operations/Triangulation.h)
+        geometric_operations/Triangulation.h
+        music/SoundtrackPlayer.cpp
+        music/SoundtrackPlayer.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm nlohmann_json::nlohmann_json)
