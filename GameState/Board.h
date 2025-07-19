@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <iostream>
 #include <map>
 #include <memory>
 #include <set>
@@ -318,7 +319,28 @@ public:
       b_next->board[row_next][col_next] = b->board[row][col];
       b->board[row][col] = {Type::EMPTY, nullptr};
     }
+
+    if (check_board()) {
+      std::cout<<"hell yeah"<<std::endl;
+    }
   }
+
+  bool check_board() {
+    for (int row = 0; row < n; row++) {
+      for (int col = 0; col < n; col++) {
+        auto cell = board.at(row).at(col);
+        if (goal_layer[row][col] && cell.first == Type::EMPTY) {
+          return false;
+        }
+        if (cell.first == Type::BOARD && !cell.second -> check_board()) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
 
   Command move(std::vector<std::pair<int, int>> coords, Direction dir) {
     std::vector<std::vector<std::pair<int, int>>> sequence {coords};

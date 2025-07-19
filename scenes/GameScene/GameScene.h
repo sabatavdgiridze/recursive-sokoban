@@ -1,5 +1,6 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
+
 #include "../Scene.h"
 
 
@@ -21,12 +22,7 @@ public:
     camera->ratio = 1;
   }
 
-  Operation* update(float d_t) override {
-    if (input_manager) {
-      input_manager->update();
-    }
-    return new NoOperation();
-  }
+  Operation* update(float d_t) override;
 
   void draw() override {
     board->draw(camera);

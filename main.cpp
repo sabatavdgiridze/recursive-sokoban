@@ -23,7 +23,7 @@ int main(void)
   font_loader->load("../fonts/font_data.json");
 
   scene_manager.scenes.push(new InitialScene(font_loader));
-  while (!WindowShouldClose())
+  while (true)
   {
     BeginDrawing();
     ClearBackground(RAYWHITE);
