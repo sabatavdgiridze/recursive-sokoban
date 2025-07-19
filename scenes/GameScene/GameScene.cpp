@@ -76,7 +76,16 @@ void PauseState::enter(GameScene *scene) {
   );
 
   for (UIButton* button : scene->buttons) {
-
+    scene->animation_manager->push_animation(
+      new Animation<float>(
+        700,
+        350,
+        button->ui.get_x(),
+        0.5,
+        new EaseOut(),
+        nullptr
+      )
+    );
   }
 }
 
@@ -92,6 +101,9 @@ Operation * PauseState::update(GameScene *scene, float d_t) {
   if (scene->animation_manager->get_size() == 0) {
     if (IsKeyPressed(KEY_ESCAPE)) {
       scene->changeState(new PlayingState());
+    }
+    for (UIButton* button : scene->buttons) {
+      button->update(d_t, scene->camera);
     }
   }
   return new NoOperation();

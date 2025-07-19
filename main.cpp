@@ -31,7 +31,8 @@ int main(void)
   SetExitKey(KEY_NULL);
   while (!WindowShouldClose())
   {
-    soundtrack.update();
+    //soundtrack.update();
+
     BeginDrawing();
     ClearBackground(RAYWHITE);
 

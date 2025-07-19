@@ -24,25 +24,21 @@ public:
 
     Vector2 mouse_world = camera->inverse_transform(mouse_screen);
 
-    Rectangle ui_rect = ui;
-    if (CheckCollisionPointRec(mouse_world, ui_rect) && inside == false) {
+    if (CheckCollisionPointRec(mouse_world, ui) && inside == false) {
       inside = true;
-      ui.rect.x += 50;
     }
-    if (!CheckCollisionPointRec(mouse_world, ui_rect) && inside == true) {
+    if (!CheckCollisionPointRec(mouse_world, ui) && inside == true) {
       inside = false;
-      ui.rect.x -= 50;
     }
 
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mouse_world, ui_rect)) {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mouse_world, ui)) {
       return callback();
     }
     return nullptr;
   }
-
+  UI ui;
 
 private:
-  UI ui;
   int cols;
   int rows;
   bool inside = false;

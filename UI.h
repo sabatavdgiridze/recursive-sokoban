@@ -76,6 +76,14 @@ struct UI {
     return rect;
   }
 
+  float* get_x() {
+    return &rect.x;
+  }
+
+  float* get_y() {
+    return &rect.y;
+  }
+
   std::vector<Vector2> to_ccw_points() const {
     return {
       {rect.x, rect.y},

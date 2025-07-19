@@ -32,5 +32,12 @@ void UIButton::draw(GameCamera* camera) {
       cell_height
   );
 
-  camera->draw_polygons(borders, GRAY);
+  if (!inside) {
+    camera->draw_polygons(borders, GRAY);
+    return;
+  }
+
+  for (auto border : borders) {
+    camera->fill_polygons(border, GRAY);
+  }
 }
