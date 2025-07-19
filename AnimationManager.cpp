@@ -19,3 +19,11 @@ void AnimationManager::update(float d_t) {
     bus_ptr->broadcast("INPUT_ACTIVE");
   }
 }
+
+void AnimationManager::push_animation(AnimationBase* animation_ptr) {
+  bool was_empty = animations.empty();
+  animations.push_back(animation_ptr);
+  if (was_empty && bus_ptr) {
+    bus_ptr->broadcast("INPUT_INACTIVE");
+  }
+}

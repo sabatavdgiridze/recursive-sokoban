@@ -71,6 +71,67 @@ private:
   std::function<void()> on_complete;
 };
 
+class DelayedAnimation : public AnimationBase {
+public:
+  DelayedAnimation(AnimationBase* animation, float delay_time)
+    : animation(animation), delay_time(delay_time) {}
 
+  void update(float d_t) override {
+    delay_timer += d_t;
+
+    if (delay_timer >= delay_time) {
+      // Delay is over, update the wrapped animation
+      animation->update(d_t);
+    }
+  }
+
+  bool get_is_finished() override {
+    if (delay_timer < delay_time) {
+      return false; // Still in delay phase
+    }
+    return animation->get_is_finished();
+  }
+
+  ~DelayedAnimation() {
+    delete animation;
+  }
+
+private:
+  AnimationBase* animation;
+  float delay_time;
+  float delay_timer = 0.0f;
+};
+
+class ParallelAnimation : public AnimationBase {
+public:
+  ParallelAnimation(std::vector<AnimationBase*> animations)
+    : animations(animations) {}
+
+  void update(float d_t) override {
+    for (auto* animation : animations) {
+      if (!animation->get_is_finished()) {
+        animation->update(d_t);
+      }
+    }
+  }
+
+  bool get_is_finished() override {
+    for (auto* animation : animations) {
+      if (!animation->get_is_finished()) {
+        return false; // At least one animation is still running
+      }
+    }
+    return true; // All animations finished
+  }
+
+  ~ParallelAnimation() {
+    for (auto* animation : animations) {
+      delete animation;
+    }
+  }
+
+private:
+  std::vector<AnimationBase*> animations;
+};
 
 #endif //ANIMATION_H

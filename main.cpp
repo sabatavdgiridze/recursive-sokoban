@@ -1,7 +1,5 @@
 #include <fstream>
 
-#include "GameState/Board.h"
-#include "GameDataReader.h"
 #include "raylib.h"
 #include "fonts/FontLoader.h"
 #include "scenes/InitialScene.h"
@@ -23,7 +21,9 @@ int main(void)
   font_loader->load("../fonts/font_data.json");
 
   scene_manager.scenes.push(new InitialScene(font_loader));
-  while (true)
+
+  SetExitKey(KEY_NULL);
+  while (!WindowShouldClose())
   {
     BeginDrawing();
     ClearBackground(RAYWHITE);

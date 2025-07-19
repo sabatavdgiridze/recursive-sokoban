@@ -99,8 +99,42 @@ public:
     camera->screen_pos = {400,400};
     camera->x_axis     = {1,0};
     camera->y_axis     = {0,-1};
-    camera->ratio = 1;
-    set_camera(0);
+
+    float total_width = (500 + 200) * (boards.size() - 1) + 500;
+    Vector2 overview_center = {total_width / 2, 250};
+    float overview_ratio = total_width * 1.5 / 800.0f;
+
+    camera->origin = overview_center;
+    camera->ratio = 10;
+
+    auto on_complete = [this] () {
+      curr_idx = 0;
+      is_active = true;
+    };
+
+    is_active = false;
+    animation_manager->push_animation(
+      new DelayedAnimation(
+        new ParallelAnimation(
+          {
+            new Animation<Vector2>(
+              overview_center,
+              centers.at(0),
+              &camera->origin,
+              2.0f,
+              new EaseOut(),
+              nullptr
+            ),
+            new Animation<float>(
+              overview_ratio,
+              1.0f,
+              &camera->ratio,
+              2.0f,
+              new EaseOut(),
+              on_complete
+            )
+          }
+        ), 1.0f));
   }
 };
 
