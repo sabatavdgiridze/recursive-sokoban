@@ -5,15 +5,26 @@
 
 void PlayingState::enter(GameScene* scene) {
   scene->animation_manager->push_animation(
-  new Animation<Vector2>(
-    Vector2{-100, 0},
-    Vector2{0, 0},
-    scene->board->get_position_ref(),
-    1,
-    new EaseOut(),
-    nullptr
-  )
-);
+    new Animation<Vector2>(
+      Vector2{-400, 0},
+      Vector2{0, 0},
+      scene->board->get_position_ref(),
+      1,
+      new EaseOut(),
+      nullptr
+    )
+  );
+
+  scene->animation_manager->push_animation(
+    new Animation<float>(
+      2,
+      1,
+      &scene->camera->ratio,
+      1,
+      new EaseOut(),
+      nullptr
+    )
+  );
 }
 
 void PlayingState::exit(GameScene* scene) {
@@ -45,13 +56,28 @@ void PauseState::enter(GameScene *scene) {
   scene->animation_manager->push_animation(
     new Animation<Vector2>(
       Vector2{0, 0},
-      Vector2{-100, 0},
+      Vector2{-400, 0},
       scene->board->get_position_ref(),
       1,
       new EaseOut(),
       nullptr
     )
   );
+
+  scene->animation_manager->push_animation(
+    new Animation<float>(
+      1,
+      2,
+      &scene->camera->ratio,
+      1,
+      new EaseOut(),
+      nullptr
+    )
+  );
+
+  for (UIButton* button : scene->buttons) {
+
+  }
 }
 
 void PauseState::exit(GameScene *scene) {
@@ -73,4 +99,7 @@ Operation * PauseState::update(GameScene *scene, float d_t) {
 
 void PauseState::draw(GameScene *scene) {
   scene->board->draw(scene->camera);
+  for (UIButton* button : scene->buttons) {
+    button->draw(scene->camera);
+  }
 }
