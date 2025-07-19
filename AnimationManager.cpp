@@ -27,3 +27,7 @@ void AnimationManager::push_animation(AnimationBase* animation_ptr) {
     bus_ptr->broadcast("INPUT_INACTIVE");
   }
 }
+
+int AnimationManager::get_size() {
+  return animations.size();
+}

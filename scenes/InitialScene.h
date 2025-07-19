@@ -2,7 +2,7 @@
 #define INITIALSCENE_H
 #include "LevelScene.h"
 #include "../GameDataReader.h"
-#include "Scene.h"
+#include "abstract_scene/Scene.h"
 #include "../UI.h"
 #include "../Buttons/UIButton.h"
 #include "../fonts/FontLoader.h"

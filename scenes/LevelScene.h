@@ -3,7 +3,7 @@
 
 
 #include "GameScene/GameScene.h"
-#include "Scene.h"
+#include "abstract_scene/Scene.h"
 
 
 class LevelScene : public AbstractScene, public Notified {

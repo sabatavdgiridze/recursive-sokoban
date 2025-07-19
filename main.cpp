@@ -4,7 +4,7 @@
 #include "fonts/FontLoader.h"
 #include "music/SoundtrackPlayer.h"
 #include "scenes/InitialScene.h"
-#include "scenes/Scene.h"
+#include "scenes/abstract_scene/Scene.h"
 #include "scenes/SceneManager.h"
 
 

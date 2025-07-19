@@ -1,9 +1,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "Operation.h"
-#include "../AnimationManager.h"
-#include "../InputManager.h"
+#include "../Operation.h"
+#include "../../AnimationManager.h"
+#include "../../InputManager.h"
 
 class AbstractScene {
 public:

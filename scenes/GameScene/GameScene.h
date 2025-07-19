@@ -1,15 +1,44 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
 
-#include "../Scene.h"
+#include "../abstract_scene/FSMScene.h"
+#include "../abstract_scene/Scene.h"
+
+class GameScene;
+
+class PlayingState : public SceneState<GameScene> {
+public:
+  void enter(GameScene* scene) override;
+
+  void exit(GameScene* scene) override;
+
+  Operation * update(GameScene* scene, float d_t) override;
+
+  void draw(GameScene* scene) override;
+};
 
 
-class GameScene : public AbstractScene {
+class PauseState : public SceneState<GameScene> {
+public:
+  void enter(GameScene* scene) override;
+
+  void exit(GameScene* scene) override;
+
+  Operation * update(GameScene* scene, float d_t) override;
+
+  void draw(GameScene* scene) override;
+private:
+
+};
+
+
+class GameScene : public FSMScene<GameScene> {
+public:
   Board* board;
   GameCamera* camera = nullptr;
   InputManager* input_manager = nullptr;
+  AnimationManager* animation_manager = new AnimationManager(nullptr);
 
-public:
   explicit GameScene(Board* board) : board(board) {
     board->set_position({0, 0}, 500);
     input_manager = new InputManager(board, board->find_player_coords_rec());
@@ -20,14 +49,12 @@ public:
     camera->x_axis     = {1,0};
     camera->y_axis     = {0,-1};
     camera->ratio = 1;
+
+    current_state = new PlayingState();
   }
 
-  Operation* update(float d_t) override;
-
-  void draw() override {
-    board->draw(camera);
-  };
 };
+
 
 
 #endif //GAMESCENE_H

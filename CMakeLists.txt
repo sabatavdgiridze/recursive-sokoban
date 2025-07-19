@@ -33,8 +33,8 @@ add_executable(recursive_sokoban main.cpp
         EventBus.h
         GameDataReader.cpp
         GameDataReader.h
-        scenes/Scene.cpp
-        scenes/Scene.h
+        scenes/abstract_scene/Scene.cpp
+        scenes/abstract_scene/Scene.h
         SierpinskiRenderer.cpp
         SierpinskiRenderer.h
         scenes/LevelScene.cpp
@@ -62,6 +62,8 @@ add_executable(recursive_sokoban main.cpp
         geometric_operations/Triangulation.cpp
         geometric_operations/Triangulation.h
         music/SoundtrackPlayer.cpp
-        music/SoundtrackPlayer.h)
+        music/SoundtrackPlayer.h
+        scenes/abstract_scene/FSMScene.cpp
+        scenes/abstract_scene/FSMScene.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm nlohmann_json::nlohmann_json)

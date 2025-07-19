@@ -12,6 +12,7 @@ public:
 
   void push_animation(AnimationBase* animation_ptr);
   void update(float d_t);
+  int get_size();
 private:
   std::vector<AnimationBase*> animations;
   EventBus* bus_ptr;
