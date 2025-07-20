@@ -1,5 +1,6 @@
 #include "GameScene.h"
 
+#include "../GameModalScene.h"
 #include "../InitialScene.h"
 #include "../../GameDataReader.h"
 
@@ -43,6 +44,9 @@ Operation *PlayingState::update(GameScene* scene, float d_t) {
 
     if (scene->input_manager) {
       scene->input_manager->update();
+      if (scene->input_manager->is_game_won()) {
+        return new PushOperation(new GameModalScene());
+      }
     }
   }
   return new NoOperation();

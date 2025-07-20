@@ -182,7 +182,7 @@ public:
         edges.erase(edge);
       }
       current_n += current_border.size();
-      borders->obstacle_borders.push_back(Chaikin::subdivide(loop_points(current_border), get_right_turns(loop_points(current_border)), 4));    }
+      borders->obstacle_borders.push_back(Chaikin<std::pair<int, int>>::subdivide(loop_points(current_border), get_right_turns(loop_points(current_border)), 4));    }
     return borders;
   }
 
@@ -318,10 +318,6 @@ public:
 
       b_next->board[row_next][col_next] = b->board[row][col];
       b->board[row][col] = {Type::EMPTY, nullptr};
-    }
-
-    if (check_board()) {
-      std::cout<<"hell yeah"<<std::endl;
     }
   }
 

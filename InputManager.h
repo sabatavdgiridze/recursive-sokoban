@@ -37,6 +37,10 @@ public:
     }
   }
 
+  bool is_game_won() {
+    return board->check_board();
+  }
+
 private:
   Board* board;
   CommandController* command_controller;

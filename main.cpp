@@ -31,7 +31,7 @@ int main(void)
   SetExitKey(KEY_NULL);
   while (!WindowShouldClose())
   {
-    //soundtrack.update();
+    soundtrack.update();
     scene_manager.update(GetFrameTime());
 
     BeginDrawing();

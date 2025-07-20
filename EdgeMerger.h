@@ -124,7 +124,7 @@ public:
       }
 
       std::vector<int> fixed_idxs;
-      border = Chaikin::subdivide(int_points, fixed_idxs, 2);
+      border = Chaikin<std::pair<int, int>>::subdivide(int_points, fixed_idxs, 2);
     }
 
     for (auto &border: borders) {

@@ -64,6 +64,11 @@ add_executable(recursive_sokoban main.cpp
         music/SoundtrackPlayer.cpp
         music/SoundtrackPlayer.h
         scenes/abstract_scene/FSMScene.cpp
-        scenes/abstract_scene/FSMScene.h)
+        scenes/abstract_scene/FSMScene.h
+        scenes/GameModalScene.cpp
+        scenes/GameModalScene.h
+        ui_components/Modal.cpp
+        ui_components/Modal.h
+        raylib_common.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm nlohmann_json::nlohmann_json)
