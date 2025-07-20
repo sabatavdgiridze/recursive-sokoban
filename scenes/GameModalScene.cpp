@@ -7,7 +7,7 @@ void EnteringState::enter(GameModalScene *scene) {
       scene->modal.rectangle.rect.y - 600,
       scene->modal.rectangle.get_y(),
       1,
-      new EaseOut(),
+      new EaseOutBack(),
       nullptr
     )
   );

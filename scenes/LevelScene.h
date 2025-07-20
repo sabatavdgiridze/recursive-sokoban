@@ -66,20 +66,7 @@ public:
     }
   }
 
-  Operation* update(float d_t) override {
-    animation_manager->update(d_t);
-    if (is_active) {
-      if (IsKeyPressed(KEY_LEFT)) {
-        move(-1);
-      } else if (IsKeyPressed(KEY_RIGHT)) {
-        move(1);
-      } else if (IsKeyPressed(KEY_ENTER)) {
-        return new PopAllOperation(new GameScene(boards.at(curr_idx)));
-      }
-    }
-
-    return nullptr;
-  }
+  Operation* update(float d_t) override;
 
   void move(int dir) {
     int new_idx = curr_idx + dir;

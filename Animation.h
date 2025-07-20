@@ -1,5 +1,6 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
+#include <cmath>
 #include <functional>
 
 class Tweener {
@@ -15,6 +16,20 @@ public:
   }
 };
 
+class EaseOutBack : public Tweener {
+private:
+  float overshoot;
+
+public:
+  EaseOutBack(float overshoot = 1.70158f) : overshoot(overshoot) {}
+
+  float get(float t) override {
+    float c1 = 1.70158f;
+    float c3 = c1 + 1.0f;
+
+    return 1.0f + c3 * std::pow(t - 1.0f, 3.0f) + c1 * pow(t - 1.0f, 2.0f);
+  }
+};
 
 class AnimationBase {
 public:

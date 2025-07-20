@@ -23,15 +23,15 @@ int main(void)
   soundtrack.play();
 
   SceneManager scene_manager;
-  FontLoader* font_loader = new FontLoader();
-  font_loader->load("../fonts/font_data.json");
+  FontLoader* font_loader = FontLoader::getInstance();
 
   scene_manager.scenes.push(new InitialScene(font_loader));
 
   SetExitKey(KEY_NULL);
   while (!WindowShouldClose())
   {
-    soundtrack.update();
+    // soundtrack.update();
+
     scene_manager.update(GetFrameTime());
 
     BeginDrawing();

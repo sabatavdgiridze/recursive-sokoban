@@ -5,9 +5,20 @@
 #include <nlohmann/json.hpp>
 
 class FontLoader {
+private:
+  FontLoader() {
+    load("../fonts/font_data.json");
+  }
 public:
-  std::map<char, std::vector<std::vector<bool>>> characters;
+  FontLoader(const FontLoader&) = delete;
+  FontLoader& operator=(const FontLoader&) = delete;
 
+  static FontLoader* getInstance() {
+    static FontLoader instance;
+    return &instance;
+  }
+
+  std::map<char, std::vector<std::vector<bool>>> characters;
   void load(std::string filename) {
     std::ifstream file(filename);
 

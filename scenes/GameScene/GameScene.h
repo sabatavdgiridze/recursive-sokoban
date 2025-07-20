@@ -64,8 +64,7 @@ public:
     auto bottom = col.at(0, 0);
     auto top = col.at(0, 2);
 
-    FontLoader* font_loader = new FontLoader();
-    font_loader->load("../fonts/font_data.json");
+    FontLoader* font_loader = FontLoader::getInstance();
 
     buttons.push_back(new UIButton(top, "LEVELS", font_loader, []() -> Operation* {
       // return new PopAllOperation(new LevelScene(GameDataReader::create_boards("../boards")));
