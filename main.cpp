@@ -32,13 +32,11 @@ int main(void)
   while (!WindowShouldClose())
   {
     //soundtrack.update();
+    scene_manager.update(GetFrameTime());
 
     BeginDrawing();
-    ClearBackground(RAYWHITE);
-
-    scene_manager.update(GetFrameTime());
-    scene_manager.draw();
-
+      ClearBackground(RAYWHITE);
+      scene_manager.draw();
     EndDrawing();
   }
   CloseWindow();
