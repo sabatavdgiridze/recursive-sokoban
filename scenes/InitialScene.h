@@ -1,6 +1,8 @@
 #ifndef INITIALSCENE_H
 #define INITIALSCENE_H
+
 #include "LevelScene.h"
+#include "SettingsScene.h"
 #include "../GameDataReader.h"
 #include "abstract_scene/Scene.h"
 #include "../UI.h"
@@ -38,7 +40,7 @@ public:
       return new PopAllOperation(new LevelScene(GameDataReader::create_boards("../boards")));
     }));
     buttons.push_back(new UIButton(bottom, "SETTINGS", font_loader, []() -> Operation* {
-      return new NoOperation();
+      return new PopAllOperation(new SettingsScene());
     }));
   }
 

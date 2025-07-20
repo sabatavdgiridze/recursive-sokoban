@@ -17,10 +17,10 @@ int main(void)
   InitWindow(screenWidth, screenHeight, "raylib example - basic window");
   SetTargetFPS(60);
 
-  SoundtrackPlayer soundtrack;
 
-  soundtrack.load("../music/soundtrack.ogg");
-  soundtrack.play();
+
+  SoundtrackPlayer::getInstance()->load("../music/soundtrack.ogg");
+  SoundtrackPlayer::getInstance()->play();
 
   SceneManager scene_manager;
   FontLoader* font_loader = FontLoader::getInstance();
@@ -30,8 +30,7 @@ int main(void)
   SetExitKey(KEY_NULL);
   while (!WindowShouldClose())
   {
-    // soundtrack.update();
-
+    SoundtrackPlayer::getInstance()->update();
     scene_manager.update(GetFrameTime());
 
     BeginDrawing();

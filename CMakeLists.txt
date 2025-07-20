@@ -69,6 +69,10 @@ add_executable(recursive_sokoban main.cpp
         scenes/GameModalScene.h
         ui_components/Modal.cpp
         ui_components/Modal.h
-        raylib_common.h)
+        raylib_common.h
+        scenes/SettingsScene.cpp
+        scenes/SettingsScene.h
+        ui_components/Slider.cpp
+        ui_components/Slider.h)
 
 target_link_libraries(recursive_sokoban raylib opengl32 gdi32 winmm nlohmann_json::nlohmann_json)

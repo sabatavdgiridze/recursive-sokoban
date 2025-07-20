@@ -9,7 +9,16 @@ private:
   bool isPlaying = false;
   bool isLoaded = false;
 
+  SoundtrackPlayer() = default;
+
 public:
+  SoundtrackPlayer(const SoundtrackPlayer&) = delete;
+  SoundtrackPlayer& operator=(const SoundtrackPlayer&) = delete;
+
+  static SoundtrackPlayer* getInstance() {
+    static SoundtrackPlayer instance;
+    return &instance;
+  }
   // Load the soundtrack from a file
   bool load(const char* filename) {
     if (!IsAudioDeviceReady()) InitAudioDevice();
@@ -63,6 +72,15 @@ public:
   // Check if music is currently playing
   bool playing() const {
     return isPlaying;
+  }
+
+  void setVolume(float volume) {
+    if (isLoaded) {
+      if (volume < 0.0f) volume = 0.0f;
+      if (volume > 1.0f) volume = 1.0f;
+
+      SetMusicVolume(music, volume);
+    }
   }
 
   ~SoundtrackPlayer() {
